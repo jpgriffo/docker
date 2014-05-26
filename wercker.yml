@@ -1,0 +1,12 @@
+box: wercker-labs/docker
+build:
+  steps:
+    - script:
+        name: pull docker development image
+        code: docker pull stackbrew/docker-dev:latest
+    - script:
+        name: validate
+        code: make validate
+    - script:
+        name: run tests
+        code: make test
