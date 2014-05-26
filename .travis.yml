@@ -1,18 +1,21 @@
-# Note: right now we don't use go-specific features of travis.
-# Later we might automate "go test" etc. (or do it inside a docker container...?)
-
 language: go
-
 go: 1.2
-
-# Disable the normal go build.
-install: true
-
+env:
+  global:
+  - DOCKER_HOST=tcp://localhost:4243
+  - secure: EcHUdMJSiKVI2M2V6dGOA8xdcQj3QVn5Rb27xQ0x83R+rpv5M8zcF/BIw9BIRRpPpSV1+4bCaXxLIvypG8Xc7GglKRIMQVMy1IzQnIbuIzwe6+l4oGODSCG2oB/sUMLvtHALYya1fjY0V+myEqVHkQYEQpcWPTOpl/+8y8Xv1m0=
 before_script:
-  - env | sort
-
+- env | sort
+- curl -s https://get.docker.io/ubuntu/ | sudo sh
+- sudo curl -L -o /usr/local/bin/orchard https://github.com/orchardup/go-orchard/releases/download/2.0.5/linux
+- sudo chmod +x /usr/local/bin/orchard
+- orchard hosts create -m 2G $TRAVIS_JOB_ID
 script:
-  - hack/make.sh validate-dco
-  - hack/make.sh validate-gofmt
-
-# vim:set sw=2 ts=2:
+- hack/make.sh validate-dco
+- hack/make.sh validate-gofmt
+- orchard proxy -H $TRAVIS_JOB_ID $DOCKER_HOST &
+- sleep 2
+- docker pull stackbrew/docker-dev:latest
+- make test
+after_script:
+- orchard hosts rm -f $TRAVIS_JOB_ID
