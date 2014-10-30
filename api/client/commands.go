@@ -2635,9 +2635,13 @@ func (cli *DockerCli) CmdHostsLs(args ...string) error {
 					log.Errorf("error getting state for host %s: %s", host.Name, err)
 				}
 
-				url, err := host.Driver.GetURL()
+				url, err := host.GetURL()
 				if err != nil {
-					log.Errorf("error getting URL for host %s: %s", host.Name, err)
+					if err == drivers.ErrHostIsNotRunning {
+						url = ""
+					} else {
+						log.Errorf("error getting URL for host %s: %s", host.Name, err)
+					}
 				}
 
 				isActive, err := store.IsActive(&host)
@@ -2808,7 +2812,7 @@ func (cli *DockerCli) CmdHostsUrl(args ...string) error {
 		return err
 	}
 
-	url, err := host.Driver.GetURL()
+	url, err := host.GetURL()
 	if err != nil {
 		return err
 	}

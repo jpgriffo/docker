@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 	"sort"
@@ -69,6 +70,8 @@ type RegisteredDriver struct {
 	New                 func(storePath string) (Driver, error)
 	RegisterCreateFlags func(cmd *flag.FlagSet) interface{}
 }
+
+var ErrHostIsNotRunning = errors.New("host is not running")
 
 var (
 	drivers map[string]*RegisteredDriver

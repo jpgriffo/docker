@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strings"
 
 	"github.com/docker/docker/hosts/drivers"
 	"github.com/docker/docker/pkg/log"
@@ -28,6 +29,11 @@ type hostConfig struct {
 	DriverName string
 }
 
+type ConnectionDetails struct {
+	Proto string
+	Addr  string
+}
+
 func NewHost(name, driverName, storePath string) (*Host, error) {
 	driver, err := drivers.NewDriver(driverName, storePath)
 	if err != nil {
@@ -41,15 +47,15 @@ func NewHost(name, driverName, storePath string) (*Host, error) {
 	}, nil
 }
 
-func NewDefaultHost() *Host {
+func NewDefaultHost(url string) *Host {
 	host := &Host{Name: "default"}
-	host.Driver = &drivers.DefaultDriver{}
+	host.Driver = &drivers.DefaultDriver{URL: url}
 	return host
 }
 
 func LoadHost(name string, storePath string) (*Host, error) {
 	if name == "default" {
-		return NewDefaultHost(), nil
+		return NewDefaultHost(""), nil
 	}
 
 	if _, err := os.Stat(storePath); os.IsNotExist(err) {
@@ -111,6 +117,23 @@ func (h *Host) removeStorePath() error {
 		return fmt.Errorf("%q is not a directory", h.storePath)
 	}
 	return os.RemoveAll(h.storePath)
+}
+
+func (h *Host) GetURL() (string, error) {
+	return h.Driver.GetURL()
+}
+
+// GetProtoAddr returns the protocol and address based on the URL
+func (h *Host) GetProtoAddr() (proto, addr string, err error) {
+	url, err := h.GetURL()
+	if err != nil {
+		return "", "", err
+	}
+	parts := strings.SplitN(url, "://", 2)
+	if len(parts) == 1 {
+		return "", "", fmt.Errorf("The URL for host %q is not valid: %s", h.Name, url)
+	}
+	return parts[0], parts[1], nil
 }
 
 func (h *Host) LoadConfig() error {

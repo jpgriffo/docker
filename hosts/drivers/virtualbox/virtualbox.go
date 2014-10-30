@@ -380,7 +380,7 @@ func (d *Driver) GetIP() (string, error) {
 		return "", err
 	}
 	if s != state.Running {
-		return "", nil
+		return "", drivers.ErrHostIsNotRunning
 	}
 
 	cmd, err := d.GetSSHCommand("ip addr show dev eth1")
