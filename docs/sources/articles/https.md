@@ -63,13 +63,13 @@ In the daemon mode, it will only allow connections from clients
 authenticated by a certificate signed by that CA. In the client mode,
 it will only connect to servers with a certificate signed by that CA.
 
-> **Warning**: 
+> **Warning**:
 > Using TLS and managing a CA is an advanced topic. Please familiarize yourself
 > with OpenSSL, x509 and TLS before using it in production.
 
 > **Warning**:
 > These TLS commands will only generate a working set of certificates on Linux.
-> Mac OS X comes with a version of OpenSSL that is incompatible with the 
+> Mac OS X comes with a version of OpenSSL that is incompatible with the
 > certificates that Docker requires.
 
 ### Create a CA, server and client keys with OpenSSL
@@ -176,7 +176,7 @@ need to provide your client keys, certificates and trusted CA:
 > **Note**:
 > Docker over TLS should run on TCP port 2376.
 
-> **Warning**: 
+> **Warning**:
 > As shown in the example above, you don't have to run the `docker` client
 > with `sudo` or the `docker` group when you use certificate authentication.
 > That means anyone with the keys can give any instructions to your Docker
