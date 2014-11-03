@@ -63,6 +63,27 @@ In the daemon mode, it will only allow connections from clients
 authenticated by a certificate signed by that CA. In the client mode,
 it will only connect to servers with a certificate signed by that CA.
 
+### Client configuration
+
+To enable certificate-based authentication, use the `--auth=cert` option. By
+default, this will use the public CA pool. You want to use a specific CA,
+specify its path with the `--auth-ca` option.
+
+If the server requires client certificate authentication, you can provide this
+with the `--auth-cert` and `--auth-key` options.
+
+### Daemon configuration
+
+When running the daemon with the `--auth=cert` option, it will serve a TLS
+connection that the client can verify against its CA certificate. You must
+provide a keypair for the client to check with the `--auth-cert` and
+`--auth-key` options.
+
+If you also want the client to authenticate with a client certificate, you can
+pass a CA to check the certificate against with the `--auth-ca` option.
+
+### Create a CA, server and client keys with OpenSSL
+
 > **Warning**:
 > Using TLS and managing a CA is an advanced topic. Please familiarize yourself
 > with OpenSSL, x509 and TLS before using it in production.
@@ -71,8 +92,6 @@ it will only connect to servers with a certificate signed by that CA.
 > These TLS commands will only generate a working set of certificates on Linux.
 > Mac OS X comes with a version of OpenSSL that is incompatible with the
 > certificates that Docker requires.
-
-### Create a CA, server and client keys with OpenSSL
 
 First, initialize the CA serial file and generate CA private and public
 keys:
@@ -164,13 +183,13 @@ Finally, you need to remove the passphrase from the client and server key:
 Now you can make the Docker daemon only accept connections from clients
 providing a certificate trusted by our CA:
 
-    $ sudo docker -d --tlsverify --tlscacert=ca.pem --tlscert=server-cert.pem --tlskey=server-key.pem \
+    $ sudo docker -d --auth=cert --auth-ca=ca.pem --auth-cert=server-cert.pem --auth-key=server-key.pem \
       -H=0.0.0.0:2376
 
 To be able to connect to Docker and validate its certificate, you now
 need to provide your client keys, certificates and trusted CA:
 
-    $ sudo docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem \
+    $ sudo docker --auth=cert --auth-ca=ca.pem --auth-cert=cert.pem --auth-key=key.pem \
       -H=dns-name-of-docker-host:2376 version
 
 > **Note**:
@@ -183,24 +202,7 @@ need to provide your client keys, certificates and trusted CA:
 > daemon, giving them root access to the machine hosting the daemon. Guard
 > these keys as you would a root password!
 
-### Other certificate-based modes
-
-If you don't want to have complete two-way authentication, you can run
-Docker in various other modes by mixing the flags.
-
-#### Daemon modes
-
- - `tlsverify`, `tlscacert`, `tlscert`, `tlskey` set: Authenticate clients
- - `tls`, `tlscert`, `tlskey`: Do not authenticate clients
-
-#### Client modes
-
- - `tls`: Authenticate server based on public/default CA pool
- - `tlsverify`, `tlscacert`: Authenticate server based on given CA
- - `tls`, `tlscert`, `tlskey`: Authenticate with client certificate, do not
-   authenticate server based on given CA
- - `tlsverify`, `tlscacert`, `tlscert`, `tlskey`: Authenticate with client
-   certificate and authenticate server based on given CA
+### Automatic configuration
 
 If found, the client will send its client certificate, so you just need
 to drop your keys into `~/.docker/<ca, cert or key>.pem`. Alternatively,
@@ -208,11 +210,11 @@ if you want to store your keys in another location, you can specify that
 location using the environment variable `DOCKER_CERT_PATH`.
 
     $ export DOCKER_CERT_PATH=${HOME}/.docker/zone1/
-    $ sudo docker --tlsverify ps
+    $ sudo docker --auth=cert ps
 
-#### Connecting to the Secure Docker port using `curl`
+### Connecting to the Secure Docker port using `curl`
 
-To use `curl` to make test API requests, you need to use three extra command line
-flags:
+To use `curl` to make test API requests, you need to use three extra command
+line flags:
 
     $ curl --insecure --cert ~/.docker/cert.pem --key ~/.docker/key.pem https://boot2docker:2376/images/json`
