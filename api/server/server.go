@@ -1334,8 +1334,8 @@ func ServeRequest(eng *engine.Engine, apiversion version.Version, w http.Respons
 	return nil
 }
 
-// ServeFD creates an http.Server and sets it up to serve given a socket activated
-// argument.
+// ServeFd creates an http.Server and sets it up to serve given a socket
+// activated argument.
 func ServeFd(addr string, handle http.Handler) error {
 	ls, e := systemd.ListenFD(addr)
 	if e != nil {
