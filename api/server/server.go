@@ -1347,8 +1347,8 @@ func ServeRequest(eng *engine.Engine, apiversion version.Version, w http.Respons
 	return nil
 }
 
-// serveFd creates an http.Server and sets it up to serve given a socket activated
-// argument.
+// serveFd creates an http.Server and sets it up to serve given a socket
+// activated argument.
 func serveFd(addr string, job *engine.Job) error {
 	r, err := createRouter(job.Eng, job.GetenvBool("Logging"), job.GetenvBool("EnableCors"), job.Getenv("Version"))
 	if err != nil {
