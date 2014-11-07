@@ -136,6 +136,8 @@ func (d *Daemon) Start(arg ...string) error {
 
 			d.t.Log("daemon started")
 			return nil
+		case <-d.wait:
+			return fmt.Errorf("daemon exited before it started serving requests")
 		}
 	}
 }
