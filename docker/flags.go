@@ -72,7 +72,7 @@ func init() {
 		dockerCertPath = dockerHome
 	}
 
-	flAuth = flag.String([]string{"-auth"}, dockerAuth, "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
+	flAuth = flag.String([]string{"-auth"}, "none", "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
 	flTrustHosts = flag.String([]string{"-auth-known-hosts"}, filepath.Join(dockerHome, defaultHostKeysFile), "Path to file containing known hosts for identity auth")
 	flTrustClients = flag.String([]string{"-auth-authorized-keys"}, filepath.Join(dockerHome, defaultClientKeysFile), "Path to file containing authorized keys identity auth")
 	flTrustKey = flag.String([]string{"i", "-identity"}, filepath.Join(dockerHome, defaultTrustKeyFile), "Path to libtrust key file")

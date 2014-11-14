@@ -21,8 +21,8 @@ authorize connections.  Using this method requires additional setup to enable
 client authentication.
 
 The authentication method is selected using the `--auth` flag with values
- `identity`, `cert`, or `none` . `identity` is the default method and `none`
-should only be used with caution.
+ `identity`, `cert`, or `none` . `none` is the current default method but
+`identity` will become the default in a future version.
 
 ## Identity-based authentication
 
