@@ -19,11 +19,20 @@ const (
 )
 
 var (
+	dockerAuth     = os.Getenv("DOCKER_AUTH")
+	dockerAuthCert = os.Getenv("DOCKER_AUTH_CERT")
+	dockerAuthKey  = os.Getenv("DOCKER_AUTH_KEY")
+	dockerAuthCa   = os.Getenv("DOCKER_AUTH_CA")
+
+	// Deprecated TLS environment variables
 	dockerCertPath  = os.Getenv("DOCKER_CERT_PATH")
 	dockerTlsVerify = os.Getenv("DOCKER_TLS_VERIFY") != ""
 )
 
 func init() {
+	if dockerAuth == "" {
+		dockerAuth = "none"
+	}
 	if dockerCertPath == "" {
 		dockerCertPath = filepath.Join(os.Getenv("HOME"), ".docker")
 	}
@@ -35,10 +44,10 @@ var (
 	flDebug       = flag.Bool([]string{"D", "-debug"}, false, "Enable debug mode")
 	flSocketGroup = flag.String([]string{"G", "-group"}, "docker", "Group to assign the unix socket specified by -H when running in daemon mode\nuse '' (the empty string) to disable setting of a group")
 	flEnableCors  = flag.Bool([]string{"#api-enable-cors", "-api-enable-cors"}, false, "Enable CORS headers in the remote API")
-	flAuth        = flag.String([]string{"-auth"}, "none", "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
-	flAuthCa      = flag.String([]string{"-auth-ca"}, "", "Trust only remotes providing a certificate signed by the CA given here")
-	flAuthCert    = flag.String([]string{"-auth-cert"}, "", "Path to TLS certificate file")
-	flAuthKey     = flag.String([]string{"-auth-key"}, "", "Path to TLS key file")
+	flAuth        = flag.String([]string{"-auth"}, dockerAuth, "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
+	flAuthCa      = flag.String([]string{"-auth-ca"}, dockerAuthCa, "Trust only remotes providing a certificate signed by the CA given here")
+	flAuthCert    = flag.String([]string{"-auth-cert"}, dockerAuthCert, "Path to TLS certificate file")
+	flAuthKey     = flag.String([]string{"-auth-key"}, dockerAuthKey, "Path to TLS key file")
 	// Deprecated TLS options
 	flTls       = flag.Bool([]string{"-tls"}, false, "Use TLS; implied by tls-verify flags")
 	flTlsVerify = flag.Bool([]string{"-tlsverify"}, dockerTlsVerify, "Use TLS and verify the remote (daemon: verify client, client: verify daemon)")
