@@ -35,7 +35,7 @@ var (
 	flDebug       = flag.Bool([]string{"D", "-debug"}, false, "Enable debug mode")
 	flSocketGroup = flag.String([]string{"G", "-group"}, "docker", "Group to assign the unix socket specified by -H when running in daemon mode\nuse '' (the empty string) to disable setting of a group")
 	flEnableCors  = flag.Bool([]string{"#api-enable-cors", "-api-enable-cors"}, false, "Enable CORS headers in the remote API")
-	flAuth        = flag.String([]string{"-auth"}, "identity", "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
+	flAuth        = flag.String([]string{"-auth"}, "none", "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
 	flAuthCa      = flag.String([]string{"-auth-ca"}, "", "Trust only remotes providing a certificate signed by the CA given here")
 	flAuthCert    = flag.String([]string{"-auth-cert"}, "", "Path to TLS certificate file")
 	flAuthKey     = flag.String([]string{"-auth-key"}, "", "Path to TLS key file")
