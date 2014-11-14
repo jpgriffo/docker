@@ -43,7 +43,7 @@ private key and its fingerprint is used by the daemon to identify the client.
 This file should be secured.
  - `--auth-authorized-keys` - specifies the client whitelist.  This is a daemon
 configuration and should have its write permissions restricted.
- - `--auth-allowed-host` - specifies the list of daemon public key fingerprints
+ - `--auth-known-hosts` - specifies the list of daemon public key fingerprints
 which have been approved by the user and the host name associated with
 each fingerprint.
 
