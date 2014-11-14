@@ -48,8 +48,8 @@ var (
 	flAuthCert    = flag.String([]string{"-auth-cert"}, dockerAuthCert, "Path to TLS certificate file")
 	flAuthKey     = flag.String([]string{"-auth-key"}, dockerAuthKey, "Path to TLS key file")
 	// Deprecated TLS options
-	flTls       = flag.Bool([]string{"-tls"}, false, "Use TLS; implied by tls-verify flags")
-	flTlsVerify = flag.Bool([]string{"-tlsverify"}, dockerTlsVerify, "Use TLS and verify the remote (daemon: verify client, client: verify daemon)")
+	flTls       = flag.Bool([]string{"#-tls"}, false, "Use TLS; implied by tls-verify flags")
+	flTlsVerify = flag.Bool([]string{"#-tlsverify"}, dockerTlsVerify, "Use TLS and verify the remote (daemon: verify client, client: verify daemon)")
 
 	// these are initialized in init() below since their default values depend on dockerCertPath which isn't fully initialized until init() runs
 	flAuth         *string
@@ -71,9 +71,9 @@ func init() {
 	opts.HostListVar(&flHosts, []string{"H", "-host"}, "The socket(s) to bind to in daemon mode or connect to in client mode, specified using one or more tcp://host:port, unix:///path/to/socket, fd://* or fd://socketfd.")
 
 	// Deprecated TLS options
-	flCa = flag.String([]string{"-tlscacert"}, filepath.Join(dockerCertPath, defaultCaFile), "Deprecated: Trust only remotes providing a certificate signed by the CA given here")
-	flCert = flag.String([]string{"-tlscert"}, filepath.Join(dockerCertPath, defaultCertFile), "Deprecated: Path to TLS certificate file")
-	flKey = flag.String([]string{"-tlskey"}, filepath.Join(dockerCertPath, defaultKeyFile), "Deprecated: Path to TLS key file")
+	flCa = flag.String([]string{"#-tlscacert"}, filepath.Join(dockerCertPath, defaultCaFile), "Deprecated: Trust only remotes providing a certificate signed by the CA given here")
+	flCert = flag.String([]string{"#-tlscert"}, filepath.Join(dockerCertPath, defaultCertFile), "Deprecated: Path to TLS certificate file")
+	flKey = flag.String([]string{"#-tlskey"}, filepath.Join(dockerCertPath, defaultKeyFile), "Deprecated: Path to TLS key file")
 
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, "Usage: docker [OPTIONS] COMMAND [arg...]\n\nA self-sufficient runtime for linux containers.\n\nOptions:\n")
