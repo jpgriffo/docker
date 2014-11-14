@@ -53,7 +53,6 @@ var (
 	flSocketGroup = flag.String([]string{"G", "-group"}, "docker", "Group to assign the unix socket specified by -H when running in daemon mode\nuse '' (the empty string) to disable setting of a group")
 	flLogLevel    = flag.String([]string{"l", "-log-level"}, "info", "Set the logging level")
 	flEnableCors  = flag.Bool([]string{"#api-enable-cors", "-api-enable-cors"}, false, "Enable CORS headers in the remote API")
-	flAuth        = flag.String([]string{"-auth"}, dockerAuth, "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
 	flAuthCa      = flag.String([]string{"-auth-ca"}, dockerAuthCa, "Trust only remotes providing a certificate signed by the CA given here")
 	flAuthCert    = flag.String([]string{"-auth-cert"}, dockerAuthCert, "Path to TLS certificate file")
 	flAuthKey     = flag.String([]string{"-auth-key"}, dockerAuthKey, "Path to TLS key file")
@@ -62,6 +61,7 @@ var (
 	flTlsVerify = flag.Bool([]string{"-tlsverify"}, dockerTlsVerify, "Use TLS and verify the remote (daemon: verify client, client: verify daemon)")
 
 	// these are initialized in init() below since their default values depend on dockerCertPath which isn't fully initialized until init() runs
+	flAuth         *string
 	flTrustKey     *string
 	flTrustHosts   *string
 	flTrustClients *string
@@ -72,6 +72,7 @@ var (
 )
 
 func init() {
+	flAuth = flag.String([]string{"-auth"}, dockerAuth, "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
 	flTrustHosts = flag.String([]string{"-auth-known-hosts"}, filepath.Join(dockerCertPath, defaultHostKeysFile), "Path to file containing known hosts")
 	flTrustClients = flag.String([]string{"-auth-authorized-keys"}, filepath.Join(dockerCertPath, defaultClientKeysFile), "Path to file containing authorized keys")
 	flTrustKey = flag.String([]string{"i", "-identity"}, filepath.Join(dockerCertPath, defaultTrustKeyFile), "Path to libtrust key file")
