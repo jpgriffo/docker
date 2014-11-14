@@ -90,8 +90,8 @@ expect an integer, and they can only be specified once.
       --auth-key=""                              Path to TLS key file when using `cert` auth
       --auth-authorized-keys=""                  Path to authorized keys file containing client whitelist when using `identity` auth
                                                    defaults to "~/.docker/authorized_keys.json"
-      --auth-allowed-host=""                     Path to allowed hosts file containing list of daemon public key fingerprints when using `identity` auth
-                                                   defaults to "~/.docker/allowed_hosts.json"
+      --auth-known-hosts=""                      Path to known hosts file containing list of daemon public key fingerprints when using `identity` auth
+                                                   defaults to "~/.docker/known_hosts.json"
       -v, --version=false                        Print version information and quit
 
 Options with [] may be specified multiple times.

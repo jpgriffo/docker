@@ -12,7 +12,7 @@ import (
 
 const (
 	defaultTrustKeyFile   = "key.json"
-	defaultHostKeysFile   = "allowed_hosts.json"
+	defaultHostKeysFile   = "known_hosts.json"
 	defaultClientKeysFile = "authorized_keys.json"
 	defaultCaFile         = "ca.pem"
 	defaultKeyFile        = "key.pem"
@@ -72,8 +72,8 @@ var (
 )
 
 func init() {
-	flTrustHosts = flag.String([]string{"-allowed-hosts-file"}, filepath.Join(dockerCertPath, defaultHostKeysFile), "Path to file containing allowed hosts")
-	flTrustClients = flag.String([]string{"-authorized-keys-file"}, filepath.Join(dockerCertPath, defaultClientKeysFile), "Path to file containing authorized keys")
+	flTrustHosts = flag.String([]string{"-auth-known-hosts"}, filepath.Join(dockerCertPath, defaultHostKeysFile), "Path to file containing known hosts")
+	flTrustClients = flag.String([]string{"-auth-authorized-keys"}, filepath.Join(dockerCertPath, defaultClientKeysFile), "Path to file containing authorized keys")
 	flTrustKey = flag.String([]string{"i", "-identity"}, filepath.Join(dockerCertPath, defaultTrustKeyFile), "Path to libtrust key file")
 
 	opts.HostListVar(&flHosts, []string{"H", "-host"}, "The socket(s) to bind to in daemon mode or connect to in client mode, specified using one or more tcp://host:port, unix:///path/to/socket, fd://* or fd://socketfd.")
