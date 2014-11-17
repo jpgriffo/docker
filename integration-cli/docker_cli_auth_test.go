@@ -8,6 +8,99 @@ import (
 
 const testDaemonURL = "tcp://localhost:4272"
 
+func TestAuthIdentityWithGoodKeys(t *testing.T) {
+	d := NewDaemon(t)
+	if err := d.Start(
+		"-H", testDaemonURL,
+		"--auth", "identity",
+		"--identity", "fixtures/https/private-key-1.json",
+		"--auth-authorized-keys", "fixtures/https/public-key-2.json",
+	); err != nil {
+		t.Fatalf("Could not start daemon: %v", err)
+	}
+	defer d.Stop()
+
+	// ensure basic connection
+	cmd := exec.Command(
+		dockerBinary,
+		"-H", testDaemonURL,
+		"--auth", "identity",
+		"--identity", "fixtures/https/private-key-2.json",
+		"--auth-known-hosts", "fixtures/https/public-key-1.json",
+		"info",
+	)
+	out, _, err := runCommandWithOutput(cmd)
+	if err != nil {
+		t.Fatalf("failed to execute command: %s, %v", out, err)
+	}
+
+	logDone("auth - identity mode with good keys")
+}
+
+func TestAuthIdentityWithBadServerKey(t *testing.T) {
+	d := NewDaemon(t)
+	if err := d.Start(
+		"-H", testDaemonURL,
+		"--auth", "identity",
+		"--identity", "fixtures/https/private-key-3.json",
+		"--auth-authorized-keys", "fixtures/https/public-key-2.json",
+	); err != nil {
+		t.Fatalf("Could not start daemon: %v", err)
+	}
+	defer d.Stop()
+
+	// ensure basic connection
+	cmd := exec.Command(
+		dockerBinary,
+		"-H", testDaemonURL,
+		"--auth", "identity",
+		"--identity", "fixtures/https/private-key-2.json",
+		"--auth-known-hosts", "fixtures/https/public-key-1.json",
+		"info",
+	)
+	out, _, err := runCommandWithOutput(cmd)
+	if err == nil {
+		t.Fatalf("command should have failed: %s", out)
+	}
+	if !strings.Contains(out, "The authenticity of host \"localhost:4272\" can't be established.") {
+		t.Errorf("command output should have contained 'The authenticity of host \"localhost:4272\" can't be established.': %s", out)
+	}
+
+	logDone("auth - identity mode with bad server key")
+}
+
+func TestAuthIdentityWithBadClientKey(t *testing.T) {
+	d := NewDaemon(t)
+	if err := d.Start(
+		"-H", testDaemonURL,
+		"--auth", "identity",
+		"--identity", "fixtures/https/private-key-1.json",
+		"--auth-authorized-keys", "fixtures/https/public-key-2.json",
+	); err != nil {
+		t.Fatalf("Could not start daemon: %v", err)
+	}
+	defer d.Stop()
+
+	// ensure basic connection
+	cmd := exec.Command(
+		dockerBinary,
+		"-H", testDaemonURL,
+		"--auth", "identity",
+		"--identity", "fixtures/https/private-key-3.json",
+		"--auth-known-hosts", "fixtures/https/public-key-1.json",
+		"info",
+	)
+	out, _, err := runCommandWithOutput(cmd)
+	if err == nil {
+		t.Fatalf("command should have failed: %s", out)
+	}
+	if !strings.Contains(out, "remote error: bad certificate") {
+		t.Errorf("command output should have contained 'remote error: bad certificate': %s", out)
+	}
+
+	logDone("auth - identity mode with bad client key")
+}
+
 func TestAuthCert(t *testing.T) {
 	d := NewDaemon(t)
 	if err := d.Start(
