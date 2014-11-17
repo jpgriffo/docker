@@ -148,6 +148,11 @@ func createTLSConfig() *tls.Config {
 
 func promptUnknownKey(key libtrust.PublicKey, host string) bool {
 	fmt.Printf("The authenticity of host %q can't be established.\nRemote key ID %s\n", host, key.KeyID())
+
+	if os.Getenv("NOINPUT") != "" {
+		return false
+	}
+
 	fmt.Printf("Are you sure you want to continue connecting (yes/no)? ")
 	reader := bufio.NewReader(os.Stdin)
 	line, _, err := reader.ReadLine()

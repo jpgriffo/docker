@@ -71,6 +71,9 @@ unix://[/path/to/socket] to use.
 **--mtu**=VALUE
   Set the containers network mtu. Default is `1500`.
 
+**--no-input**=*true*|*false*
+  Do not prompt for any user input. Default is false.
+
 **-p**=""
   Path to use for daemon PID file. Default is `/var/run/docker.pid`
 

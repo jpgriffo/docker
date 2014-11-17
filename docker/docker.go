@@ -29,6 +29,9 @@ func main() {
 	if *flDebug {
 		os.Setenv("DEBUG", "1")
 	}
+	if *flNoInput {
+		os.Setenv("NOINPUT", "1")
+	}
 
 	// Backwards compatibility for deprecated --tls and --tlsverify options
 	if *flTls || *flTlsVerify {

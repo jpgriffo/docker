@@ -42,6 +42,7 @@ var (
 	flVersion     = flag.Bool([]string{"v", "-version"}, false, "Print version information and quit")
 	flDaemon      = flag.Bool([]string{"d", "-daemon"}, false, "Enable daemon mode")
 	flDebug       = flag.Bool([]string{"D", "-debug"}, false, "Enable debug mode")
+	flNoInput     = flag.Bool([]string{"-no-input"}, false, "Do not prompt for any user input")
 	flSocketGroup = flag.String([]string{"G", "-group"}, "docker", "Group to assign the unix socket specified by -H when running in daemon mode\nuse '' (the empty string) to disable setting of a group")
 	flEnableCors  = flag.Bool([]string{"#api-enable-cors", "-api-enable-cors"}, false, "Enable CORS headers in the remote API")
 	flAuthCa      = flag.String([]string{"-auth-ca"}, dockerAuthCa, "Trust only remotes providing a certificate signed by the CA given here")
