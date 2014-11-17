@@ -1,0 +1,12 @@
+{
+    "keys": [
+        {
+            "hosts": ["localhost:4272"],
+            "crv": "P-256",
+            "kid": "MZXN:5234:6DTI:HYH3:MKET:FEFU:3D4T:C5NO:77NY:KNLM:JDNU:WKGM",
+            "kty": "EC",
+            "x": "Xb38P_9I_ELrPHm0j8vMjp9fElz_YC5KkPWeuiPSEgI",
+            "y": "xcqQ52JZ6hBBKlynk3Npt69I_rl9VKYTf_E_eDri1xU"
+        }
+    ]
+}
