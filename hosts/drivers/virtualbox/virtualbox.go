@@ -344,9 +344,9 @@ func (d *Driver) GetState() (state.State, error) {
 		"--machinereadable")
 	if err != nil {
 		if reMachineNotFound.FindString(stderr) != "" {
-			return state.None, ErrMachineNotExist
+			return state.Error, ErrMachineNotExist
 		}
-		return state.None, err
+		return state.Error, err
 	}
 	re := regexp.MustCompile(`(?m)^VMState="(\w+)"$`)
 	groups := re.FindStringSubmatch(stdout)

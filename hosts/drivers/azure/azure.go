@@ -239,7 +239,7 @@ func (driver *Driver) GetIP() (string, error) {
 func (driver *Driver) GetState() (state.State, error) {
 	err := driver.setUserSubscription()
 	if err != nil {
-		return state.None, err
+		return state.Error, err
 	}
 
 	dockerVM, err := vmClient.GetVMDeployment(driver.Name, driver.Name)

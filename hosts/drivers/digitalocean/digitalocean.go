@@ -211,7 +211,7 @@ func (d *Driver) GetIP() (string, error) {
 func (d *Driver) GetState() (state.State, error) {
 	droplet, _, err := d.getClient().Droplets.Get(d.DropletID)
 	if err != nil {
-		return state.None, err
+		return state.Error, err
 	}
 	switch droplet.Droplet.Status {
 	case "new":
