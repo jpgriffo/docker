@@ -2743,6 +2743,8 @@ func (cli *DockerCli) CmdHostsStop(args ...string) error {
 
 func (cli *DockerCli) CmdHostsRm(args ...string) error {
 	cmd := cli.Subcmd("hosts rm", "NAME", "Remove a host")
+	force := cmd.Bool([]string{"f", "-force"}, false, "Remove local configuration even if host cannot be removed")
+
 	if err := cmd.Parse(args); err != nil {
 		return err
 	}
@@ -2751,16 +2753,18 @@ func (cli *DockerCli) CmdHostsRm(args ...string) error {
 		return nil
 	}
 
-	rmErr := ""
+	isError := false
+
 	store := hosts.NewStore()
 	for _, host := range cmd.Args() {
 		host := host
-		if err := store.Remove(host); err != nil {
-			rmErr = fmt.Sprintf("%sError attempting to remove host %s: %s\n", rmErr, host, err)
+		if err := store.Remove(host, *force); err != nil {
+			log.Errorf("Error removing host %s: %s", host, err)
+			isError = true
 		}
 	}
-	if rmErr != "" {
-		return fmt.Errorf(rmErr)
+	if isError {
+		return fmt.Errorf("There was an error removing a host. To force remove it, pass the -f option. Warning: this might leave it running on the provider.")
 	}
 	return nil
 }

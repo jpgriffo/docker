@@ -60,7 +60,7 @@ func TestStoreRemove(t *testing.T) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		t.Fatalf("Host path doesn't exist: %s", path)
 	}
-	err = store.Remove("test")
+	err = store.Remove("test", false)
 	if err != nil {
 		t.Fatal(err)
 	}

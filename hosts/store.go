@@ -59,7 +59,7 @@ func (s *Store) Create(name string, driverName string, createFlags interface{}) 
 	return host, nil
 }
 
-func (s *Store) Remove(name string) error {
+func (s *Store) Remove(name string, force bool) error {
 	active, err := s.GetActive()
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func (s *Store) Remove(name string) error {
 	if err != nil {
 		return err
 	}
-	return host.Remove()
+	return host.Remove(force)
 }
 
 func (s *Store) List() ([]Host, error) {

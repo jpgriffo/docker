@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/docker/docker/hosts/drivers"
+	"github.com/docker/docker/pkg/log"
 )
 
 var (
@@ -72,6 +73,9 @@ func ValidateHostName(name string) (string, error) {
 
 func (h *Host) Create() error {
 	if err := h.Driver.Create(); err != nil {
+		if rmErr := h.removeStorePath(); rmErr != nil {
+			log.Errorf("Error cleaning up: %s", rmErr)
+		}
 		return err
 	}
 	if err := h.SaveConfig(); err != nil {
@@ -88,11 +92,18 @@ func (h *Host) Stop() error {
 	return h.Driver.Stop()
 }
 
-func (h *Host) Remove() error {
+func (h *Host) Remove(force bool) error {
 	if err := h.Driver.Remove(); err != nil {
-		return err
+		if force {
+			log.Errorf("Error removing host, force removing anyway: %s", err)
+		} else {
+			return err
+		}
 	}
+	return h.removeStorePath()
+}
 
+func (h *Host) removeStorePath() error {
 	file, err := os.Stat(h.storePath)
 	if err != nil {
 		return err
