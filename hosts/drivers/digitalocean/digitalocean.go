@@ -205,6 +205,9 @@ func (d *Driver) GetURL() (string, error) {
 }
 
 func (d *Driver) GetIP() (string, error) {
+	if d.IPAddress == "" {
+		return "", fmt.Errorf("IP address is not set")
+	}
 	return d.IPAddress, nil
 }
 
