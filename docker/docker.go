@@ -11,6 +11,7 @@ import (
 	"github.com/docker/docker/api"
 	"github.com/docker/docker/api/client"
 	"github.com/docker/docker/dockerversion"
+	"github.com/docker/docker/hosts"
 	"github.com/docker/docker/pkg/log"
 	flag "github.com/docker/docker/pkg/mflag"
 	"github.com/docker/docker/reexec"
@@ -39,20 +40,21 @@ func main() {
 		os.Setenv("DEBUG", "1")
 	}
 
-	if len(flHosts) == 0 {
-		defaultHost := os.Getenv("DOCKER_HOST")
-		if defaultHost == "" || *flDaemon {
-			// If we do not have a host, default to unix socket
-			defaultHost = fmt.Sprintf("unix://%s", api.DEFAULTUNIXSOCKET)
-		}
-		defaultHost, err := api.ValidateHost(defaultHost)
-		if err != nil {
-			log.Fatal(err)
-		}
-		flHosts = append(flHosts, defaultHost)
-	}
-
 	if *flDaemon {
+
+		if len(flHosts) == 0 {
+			defaultHost := os.Getenv("DOCKER_HOST")
+			if defaultHost == "" || *flDaemon {
+				// If we do not have a host, default to unix socket
+				defaultHost = fmt.Sprintf("unix://%s", api.DEFAULTUNIXSOCKET)
+			}
+			defaultHost, err := api.ValidateHostURL(defaultHost)
+			if err != nil {
+				log.Fatal(err)
+			}
+			flHosts = append(flHosts, defaultHost)
+		}
+
 		mainDaemon()
 		return
 	}
@@ -60,7 +62,44 @@ func main() {
 	if len(flHosts) > 1 {
 		log.Fatal("Please specify only one -H")
 	}
-	protoAddrParts := strings.SplitN(flHosts[0], "://", 2)
+
+	store := hosts.NewStore()
+
+	// Select active host if no host has been specified
+	if len(flHosts) == 0 {
+		host, err := store.GetActive()
+		if err != nil {
+			log.Fatal(err)
+		}
+		url, err := host.Driver.GetURL()
+		if err != nil {
+			log.Fatal(err)
+		}
+		flHosts = append(flHosts, url)
+	}
+
+	hostURL := flHosts[0]
+
+	// Attempt to find a host if it's a valid name
+	if _, err := hosts.ValidateHostName(hostURL); err == nil {
+		exists, err := store.Exists(hostURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !exists {
+			log.Fatal(fmt.Errorf("Host %q does not exist. Create it using 'docker hosts create'.", hostURL))
+		}
+		host, err := store.Load(hostURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		hostURL, err = host.Driver.GetURL()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	protoAddrParts := strings.SplitN(hostURL, "://", 2)
 
 	var (
 		cli       *client.DockerCli

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/docker/docker/api"
+	"github.com/docker/docker/hosts"
 	flag "github.com/docker/docker/pkg/mflag"
 	"github.com/docker/docker/pkg/parsers"
 )
@@ -24,7 +25,7 @@ func ListVar(values *[]string, names []string, usage string) {
 }
 
 func HostListVar(values *[]string, names []string, usage string) {
-	flag.Var(newListOptsRef(values, api.ValidateHost), names, usage)
+	flag.Var(newListOptsRef(values, ValidateHost), names, usage)
 }
 
 func IPListVar(values *[]string, names []string, usage string) {
@@ -226,4 +227,21 @@ func ValidateMirror(val string) (string, error) {
 	}
 
 	return fmt.Sprintf("%s://%s/v1/", uri.Scheme, uri.Host), nil
+}
+
+func ValidateOption(val string) (string, error) {
+	arr := strings.Split(val, "=")
+	if len(arr) < 2 {
+		return "", fmt.Errorf("config options must be in the format key=value")
+	}
+	return val, nil
+}
+
+func ValidateHost(val string) (string, error) {
+	val, err := hosts.ValidateHostName(val)
+	if err == nil {
+		return val, nil
+	} else {
+		return api.ValidateHostURL(val)
+	}
 }
