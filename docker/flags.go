@@ -30,15 +30,6 @@ var (
 	dockerTlsVerify = os.Getenv("DOCKER_TLS_VERIFY") != ""
 )
 
-func init() {
-	if dockerAuth == "" {
-		dockerAuth = "none"
-	}
-	if dockerCertPath == "" {
-		dockerCertPath = filepath.Join(getHomeDir(), ".docker")
-	}
-}
-
 func getHomeDir() string {
 	if runtime.GOOS == "windows" {
 		return os.Getenv("USERPROFILE")
@@ -72,10 +63,19 @@ var (
 )
 
 func init() {
+	dockerHome := filepath.Join(getHomeDir(), ".docker")
+
+	if dockerAuth == "" {
+		dockerAuth = "none"
+	}
+	if dockerCertPath == "" {
+		dockerCertPath = dockerHome
+	}
+
 	flAuth = flag.String([]string{"-auth"}, dockerAuth, "Method used to authenticate the connection between client and daemon. Possible methods: identity, cert, none")
-	flTrustHosts = flag.String([]string{"-auth-known-hosts"}, filepath.Join(dockerCertPath, defaultHostKeysFile), "Path to file containing known hosts")
-	flTrustClients = flag.String([]string{"-auth-authorized-keys"}, filepath.Join(dockerCertPath, defaultClientKeysFile), "Path to file containing authorized keys")
-	flTrustKey = flag.String([]string{"i", "-identity"}, filepath.Join(dockerCertPath, defaultTrustKeyFile), "Path to libtrust key file")
+	flTrustHosts = flag.String([]string{"-auth-known-hosts"}, filepath.Join(dockerHome, defaultHostKeysFile), "Path to file containing known hosts")
+	flTrustClients = flag.String([]string{"-auth-authorized-keys"}, filepath.Join(dockerHome, defaultClientKeysFile), "Path to file containing authorized keys")
+	flTrustKey = flag.String([]string{"i", "-identity"}, filepath.Join(dockerHome, defaultTrustKeyFile), "Path to libtrust key file")
 
 	opts.HostListVar(&flHosts, []string{"H", "-host"}, "The socket(s) to bind to in daemon mode or connect to in client mode, specified using one or more tcp://host:port, unix:///path/to/socket, fd://* or fd://socketfd.")
 
