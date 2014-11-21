@@ -12,8 +12,8 @@ import (
 
 const (
 	defaultTrustKeyFile   = "key.json"
-	defaultHostKeysFile   = "known_hosts.json"
-	defaultClientKeysFile = "authorized_keys.json"
+	defaultHostKeysFile   = "known-hosts.json"
+	defaultClientKeysFile = "authorized-keys.json"
 	defaultCaFile         = "ca.pem"
 	defaultKeyFile        = "key.pem"
 	defaultCertFile       = "cert.pem"

@@ -32,7 +32,7 @@ trusts a fingerprint of the daemon’s public key. If they do, the public key wi
 be stored so it does not prompt on subsequent connections. For the daemon
 to authenticate the client, each client automatically generates its own
 key (~/.docker/key.json) which is presented to the daemon and checked
-against a list of keys authorized to connect (~/.docker/authorized_keys.json).
+against a list of keys authorized to connect (~/.docker/authorized-keys.json).
 
 To enable identity-based authentication, add the flag `--auth=identity`.
 The default identity and authorization files may be overridden through the
