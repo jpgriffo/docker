@@ -288,6 +288,18 @@ func TestAuthTLS(t *testing.T) {
 		t.Fatalf("failed to execute command: %s, %v", out, err)
 	}
 
+	// ensure basic TLS connection is triggered with --tlsverify=false
+	cmd = exec.Command(
+		dockerBinary,
+		"-H", testDaemonURL,
+		"--tlsverify=false",
+		"info",
+	)
+	out, _, err = runCommandWithOutput(cmd)
+	if err != nil {
+		t.Fatalf("failed to execute command: %s, %v", out, err)
+	}
+
 	// ensure verification with CA works
 	cmd = exec.Command(
 		dockerBinary,
