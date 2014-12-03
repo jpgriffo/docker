@@ -31,6 +31,7 @@ import (
 	"github.com/docker/docker/hosts"
 	"github.com/docker/docker/hosts/drivers"
 	_ "github.com/docker/docker/hosts/drivers/azure"
+	_ "github.com/docker/docker/hosts/drivers/concerto"
 	_ "github.com/docker/docker/hosts/drivers/digitalocean"
 	_ "github.com/docker/docker/hosts/drivers/none"
 	_ "github.com/docker/docker/hosts/drivers/virtualbox"
